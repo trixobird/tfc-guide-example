@@ -2,12 +2,12 @@ provider "aws" {
   region = var.region
 }
 
-data "aws_ami" "ubuntu" {
+data "aws_ami" "amazonlinux" {
   most_recent = true
 
   filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+    name   = "architecture"
+    values = ["arm64"]
   }
 
   filter {
@@ -15,11 +15,16 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
 
-  owners = ["099720109477"] # Canonical
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-kernel-5.10-*"]
+  }
+
+  owners = ["137112412989"] # Amazon
 }
 
-resource "aws_instance" "ubuntu" {
-  ami           = data.aws_ami.ubuntu.id
+resource "aws_instance" "amazonlinux" {
+  ami           = data.aws_ami.amazonlinux.id
   instance_type = var.instance_type
 
   tags = {
